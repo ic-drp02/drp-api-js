@@ -157,12 +157,12 @@ class ApiClient {
     }
     createQuestion(question) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.createResource("questions/subjects", question);
+            return this.createResource("questions", question);
         });
     }
     deleteQuestion(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.deleteResource("questions/subjects", id);
+            return this.deleteResource("questions", id);
         });
     }
     getListResource(uri) {

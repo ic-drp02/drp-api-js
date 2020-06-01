@@ -206,11 +206,11 @@ export default class ApiClient {
   }
 
   async createQuestion(question: NewQuestion): Promise<Response<Question>> {
-    return this.createResource("questions/subjects", question);
+    return this.createResource("questions", question);
   }
 
   async deleteQuestion(id: number): Promise<Response<never>> {
-    return this.deleteResource("questions/subjects", id);
+    return this.deleteResource("questions", id);
   }
 
   private async getListResource<T>(uri: string): Promise<Response<T[]>> {
