@@ -15,14 +15,7 @@ class ApiClient {
     }
     getPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield fetch(this.baseUrl + "/api/posts");
-            if (response.status != 200) {
-                return { success: false, status: response.status };
-            }
-            return {
-                success: true,
-                data: yield response.json(),
-            };
+            return yield this.getListResource("posts");
         });
     }
     createPost({ title, summary, content, tags, files, }) {
@@ -48,54 +41,22 @@ class ApiClient {
     }
     getPost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield fetch(this.baseUrl + "/api/posts/" + id.toString());
-            return yield response.json();
+            return this.getResourceById("posts", id);
         });
     }
     deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield fetch(this.baseUrl + "/api/posts/" + id.toString(), {
-                method: "DELETE",
-            });
-            if (response.status != 204) {
-                return { success: false, status: response.status };
-            }
-            return {
-                success: true,
-            };
+            return this.deleteResource("posts", id);
         });
     }
     getTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(this.baseUrl + "/api/tags");
-            if (response.status != 200) {
-                return { success: false, status: response.status };
-            }
-            return {
-                success: true,
-                data: yield response.json(),
-            };
+            return yield this.getListResource("tags");
         });
     }
     createTag(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(this.baseUrl + "/api/tags", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name,
-                }),
-            });
-            if (response.status != 200) {
-                return { success: false, status: response.status };
-            }
-            return {
-                success: true,
-                data: yield response.json(),
-            };
+            return yield this.createResource("tags", { name });
         });
     }
     getFiles() {
@@ -151,6 +112,112 @@ class ApiClient {
             return {
                 success: true,
                 data: yield response.json(),
+            };
+        });
+    }
+    getSites() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.getListResource("sites");
+        });
+    }
+    createSite(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.createResource("sites", { name });
+        });
+    }
+    deleteSite(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.deleteResource("sites", id);
+        });
+    }
+    getQuestionSubjects() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getListResource("questions/subjects");
+        });
+    }
+    createQuestionSubject(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.createResource("questions/subjects", { name });
+        });
+    }
+    deleteQuestionSubject(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.deleteResource("questions/subjects", id);
+        });
+    }
+    getQuestions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getListResource("questions");
+        });
+    }
+    getQuestion(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getResourceById("questions", id);
+        });
+    }
+    createQuestion(question) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.createResource("questions/subjects", question);
+        });
+    }
+    deleteQuestion(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.deleteResource("questions/subjects", id);
+        });
+    }
+    getListResource(uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(this.baseUrl + "/api/" + uri);
+            if (response.status !== 200) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
+                data: yield response.json(),
+            };
+        });
+    }
+    createResource(uri, model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(this.baseUrl + "/api/" + uri, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(model),
+            });
+            if (response.status != 200) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
+                data: yield response.json(),
+            };
+        });
+    }
+    getResourceById(uri, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let response = yield fetch(this.baseUrl + "/api/" + uri + "/" + id.toString());
+            if (response.status !== 200) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
+                data: yield response.json(),
+            };
+        });
+    }
+    deleteResource(uri, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let response = yield fetch(this.baseUrl + "/api/" + uri + "/" + id.toString(), {
+                method: "DELETE",
+            });
+            if (response.status != 204) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
             };
         });
     }
