@@ -27,6 +27,7 @@ export interface FileEntity {
 
 export interface NewQuestion {
   site: string;
+  grade: Grade;
   specialty: string;
   subject: string;
   text: string;
@@ -35,6 +36,7 @@ export interface NewQuestion {
 export interface Question {
   id: number;
   site: Site;
+  grade: Grade;
   specialty: string;
   subject: Subject;
   text: string;
@@ -43,6 +45,15 @@ export interface Question {
 export interface Site {
   id: number;
   name: string;
+}
+
+export enum Grade {
+  Consultant = "consultant",
+  SpR = "spr",
+  CoreTrainee = "core_trainee",
+  FY2 = "fy2",
+  FY1 = "fy1",
+  FiY1 = "fiy1",
 }
 
 export interface Subject {

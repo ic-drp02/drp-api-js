@@ -9,6 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Grade = void 0;
+var Grade;
+(function (Grade) {
+    Grade["Consultant"] = "consultant";
+    Grade["SpR"] = "spr";
+    Grade["CoreTrainee"] = "core_trainee";
+    Grade["FY2"] = "fy2";
+    Grade["FY1"] = "fy1";
+    Grade["FiY1"] = "fiy1";
+})(Grade = exports.Grade || (exports.Grade = {}));
 class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
