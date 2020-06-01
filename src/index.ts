@@ -29,8 +29,7 @@ export interface NewQuestion {
   site: string;
   grade: Grade;
   specialty: string;
-  subject: string;
-  text: string;
+  questions: { subject: string; text: string }[];
 }
 
 export interface Question {
@@ -216,7 +215,7 @@ export default class ApiClient {
     return await this.getResourceById("questions", id);
   }
 
-  async createQuestion(question: NewQuestion): Promise<Response<Question>> {
+  async createQuestions(question: NewQuestion): Promise<Response<Question>> {
     return this.createResource("questions", question);
   }
 

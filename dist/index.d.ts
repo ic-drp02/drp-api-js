@@ -25,8 +25,10 @@ export interface NewQuestion {
     site: string;
     grade: Grade;
     specialty: string;
-    subject: string;
-    text: string;
+    questions: {
+        subject: string;
+        text: string;
+    }[];
 }
 export interface Question {
     id: number;
@@ -78,7 +80,7 @@ export default class ApiClient {
     deleteQuestionSubject(id: number): Promise<Response<never>>;
     getQuestions(): Promise<Response<Question[]>>;
     getQuestion(id: number): Promise<Response<Question>>;
-    createQuestion(question: NewQuestion): Promise<Response<Question>>;
+    createQuestions(question: NewQuestion): Promise<Response<Question>>;
     deleteQuestion(id: number): Promise<Response<never>>;
     private getListResource;
     private createResource;

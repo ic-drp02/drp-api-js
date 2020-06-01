@@ -165,7 +165,7 @@ class ApiClient {
             return yield this.getResourceById("questions", id);
         });
     }
-    createQuestion(question) {
+    createQuestions(question) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.createResource("questions", question);
         });
