@@ -29,9 +29,7 @@ class ApiClient {
         return __awaiter(this, void 0, void 0, function* () {
             let formData = new FormData();
             formData.append("title", title);
-            if (summary) {
-                formData.append("summary", summary);
-            }
+            formData.append("summary", summary);
             formData.append("content", content);
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             files === null || files === void 0 ? void 0 : files.forEach((file) => formData.append("files", file));

@@ -1,7 +1,7 @@
 export interface Post {
     id: number;
     title: string;
-    summary?: string;
+    summary: string;
     content: string;
     tags?: Tag[];
     files?: File[];

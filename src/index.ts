@@ -1,7 +1,7 @@
 export interface Post {
   id: number;
   title: string;
-  summary?: string;
+  summary: string;
   content: string;
   tags?: Tag[];
   files?: File[];
@@ -49,9 +49,7 @@ export default class ApiClient {
   }: Post): Promise<Response<Post>> {
     let formData = new FormData();
     formData.append("title", title);
-    if (summary) {
-      formData.append("summary", summary);
-    }
+    formData.append("summary", summary);
     formData.append("content", content);
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     files?.forEach((file) => formData.append("files", file));
