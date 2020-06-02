@@ -4,11 +4,18 @@ export interface Post {
   summary?: string;
   content: string;
   tags?: Tag[];
+  files?: File[];
 }
 
 export interface Tag {
   id: number;
   name: string;
+}
+
+export interface FileEntity {
+  id: number;
+  name: string;
+  post: number;
 }
 
 export interface Response<T> {
@@ -38,19 +45,20 @@ export default class ApiClient {
     summary,
     content,
     tags,
+    files,
   }: Post): Promise<Response<Post>> {
+    let formData = new FormData();
+    formData.append("title", title);
+    if (summary) {
+      formData.append("summary", summary);
+    }
+    formData.append("content", content);
+    tags?.forEach((tag) => formData.append("tags", String(tag)));
+    files?.forEach((file) => formData.append("files", file));
+
     let response = await fetch(this.baseUrl + "/api/posts", {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        summary,
-        content,
-        tags,
-      }),
+      body: formData,
     });
 
     if (response.status != 200) {
@@ -106,6 +114,71 @@ export default class ApiClient {
         name,
       }),
     });
+
+    if (response.status != 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
+  async getFiles(): Promise<Response<FileEntity[]>> {
+    const response = await fetch(this.baseUrl + "/api/files");
+
+    if (response.status != 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
+  async createFile(
+    file: File,
+    name: string,
+    post: number
+  ): Promise<Response<FileEntity>> {
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("name", name);
+    formData.append("post", String(post));
+
+    let response = await fetch(this.baseUrl + "/api/files", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.status != 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
+  async deleteFile(id: number): Promise<Response<undefined>> {
+    let response = await fetch(this.baseUrl + "/api/files/" + id.toString(), {
+      method: "DELETE",
+    });
+
+    if (response.status != 204) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+    };
+  }
+
+  async getFile(id: number): Promise<Response<FileEntity>> {
+    const response = await fetch(this.baseUrl + "/api/files/" + id.toString());
 
     if (response.status != 200) {
       return { success: false, status: response.status };
