@@ -28,8 +28,9 @@ class ApiClient {
             return yield this.getListResource("posts");
         });
     }
-    createPost({ title, summary, content, tags, names, files, }) {
+    createPost({ title, summary, content, tags, names, files, onProgress, }) {
         return __awaiter(this, void 0, void 0, function* () {
+            let baseUrl = this.baseUrl;
             let formData = new FormData();
             formData.append("title", title);
             formData.append("summary", summary);
@@ -37,17 +38,31 @@ class ApiClient {
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
             files === null || files === void 0 ? void 0 : files.forEach((file) => formData.append("files", file));
-            let response = yield fetch(this.baseUrl + "/api/posts", {
-                method: "POST",
-                body: formData,
+            return yield new Promise(function (resolve, reject) {
+                let xhr = new XMLHttpRequest();
+                xhr.responseType = "json";
+                xhr.upload.onprogress = (event) => {
+                    if (onProgress !== undefined) {
+                        onProgress(event);
+                    }
+                };
+                xhr.upload.onerror = () => {
+                    resolve({ success: false, status: -1 });
+                };
+                xhr.upload.onabort = () => {
+                    resolve({ success: false, status: -2 });
+                };
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        if (xhr.status != 200) {
+                            resolve({ success: false, status: xhr.status });
+                        }
+                        resolve({ success: true, data: xhr.response });
+                    }
+                };
+                xhr.open("POST", baseUrl + "/api/posts");
+                xhr.send(formData);
             });
-            if (response.status != 200) {
-                return { success: false, status: response.status };
-            }
-            return {
-                success: true,
-                data: yield response.json(),
-            };
         });
     }
     getPost(id) {

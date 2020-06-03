@@ -13,6 +13,7 @@ export interface PostData {
   tags?: Tag[];
   files?: File[];
   names?: string[];
+  onProgress?: Function;
 }
 
 export interface Post {
@@ -77,7 +78,7 @@ export interface Response<T> {
 }
 
 export default class ApiClient {
-  constructor(private baseUrl: string) { }
+  constructor(private baseUrl: string) {}
 
   async getPosts(): Promise<Response<Post[]>> {
     return await this.getListResource("posts");
@@ -90,7 +91,9 @@ export default class ApiClient {
     tags,
     names,
     files,
+    onProgress,
   }: PostData): Promise<Response<Post>> {
+    let baseUrl = this.baseUrl;
     let formData = new FormData();
     formData.append("title", title);
     formData.append("summary", summary);
@@ -99,19 +102,31 @@ export default class ApiClient {
     names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
 
-    let response = await fetch(this.baseUrl + "/api/posts", {
-      method: "POST",
-      body: formData,
+    return await new Promise(function (resolve, reject) {
+      let xhr = new XMLHttpRequest();
+      xhr.responseType = "json";
+      xhr.upload.onprogress = (event) => {
+        if (onProgress !== undefined) {
+          onProgress(event);
+        }
+      };
+      xhr.upload.onerror = () => {
+        resolve({ success: false, status: -1 });
+      };
+      xhr.upload.onabort = () => {
+        resolve({ success: false, status: -2 });
+      };
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          if (xhr.status != 200) {
+            resolve({ success: false, status: xhr.status });
+          }
+          resolve({ success: true, data: xhr.response });
+        }
+      };
+      xhr.open("POST", baseUrl + "/api/posts");
+      xhr.send(formData);
     });
-
-    if (response.status != 200) {
-      return { success: false, status: response.status };
-    }
-
-    return {
-      success: true,
-      data: await response.json(),
-    };
   }
 
   async getPost(id: number): Promise<Response<Post>> {
