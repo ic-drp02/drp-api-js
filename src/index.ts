@@ -5,6 +5,16 @@ export interface NewPost {
   tags?: string[];
 }
 
+export interface PostData {
+  id: number;
+  title: string;
+  summary: string;
+  content: string;
+  tags?: Tag[];
+  files?: File[];
+  names?: string[];
+}
+
 export interface Post {
   id: number;
   title: string;
@@ -67,7 +77,7 @@ export interface Response<T> {
 }
 
 export default class ApiClient {
-  constructor(private baseUrl: string) {}
+  constructor(private baseUrl: string) { }
 
   async getPosts(): Promise<Response<Post[]>> {
     return await this.getListResource("posts");
@@ -78,13 +88,15 @@ export default class ApiClient {
     summary,
     content,
     tags,
+    names,
     files,
-  }: Post): Promise<Response<Post>> {
+  }: PostData): Promise<Response<Post>> {
     let formData = new FormData();
     formData.append("title", title);
     formData.append("summary", summary);
     formData.append("content", content);
     tags?.forEach((tag) => formData.append("tags", String(tag)));
+    names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
 
     let response = await fetch(this.baseUrl + "/api/posts", {

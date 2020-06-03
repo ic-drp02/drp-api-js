@@ -4,6 +4,15 @@ export interface NewPost {
     content: string;
     tags?: string[];
 }
+export interface PostData {
+    id: number;
+    title: string;
+    summary: string;
+    content: string;
+    tags?: Tag[];
+    files?: File[];
+    names?: string[];
+}
 export interface Post {
     id: number;
     title: string;
@@ -63,7 +72,7 @@ export default class ApiClient {
     private baseUrl;
     constructor(baseUrl: string);
     getPosts(): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, tags, files, }: Post): Promise<Response<Post>>;
+    createPost({ title, summary, content, tags, names, files, }: PostData): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
     getTags(): Promise<Response<Tag[]>>;

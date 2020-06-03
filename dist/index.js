@@ -28,13 +28,14 @@ class ApiClient {
             return yield this.getListResource("posts");
         });
     }
-    createPost({ title, summary, content, tags, files, }) {
+    createPost({ title, summary, content, tags, names, files, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let formData = new FormData();
             formData.append("title", title);
             formData.append("summary", summary);
             formData.append("content", content);
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
+            names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
             files === null || files === void 0 ? void 0 : files.forEach((file) => formData.append("files", file));
             let response = yield fetch(this.baseUrl + "/api/posts", {
                 method: "POST",
