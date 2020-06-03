@@ -28,7 +28,7 @@ class ApiClient {
             return yield this.getListResource("posts");
         });
     }
-    createPost({ title, summary, content, tags, names, files, onProgress, }) {
+    createPost({ title, summary, content, tags, names, files, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;
             let formData = new FormData();
@@ -42,8 +42,8 @@ class ApiClient {
                 let xhr = new XMLHttpRequest();
                 xhr.responseType = "json";
                 xhr.upload.onprogress = (event) => {
-                    if (onProgress !== undefined) {
-                        onProgress(event);
+                    if (onUploadedFraction !== undefined) {
+                        onUploadedFraction(event.loaded / event.total);
                     }
                 };
                 xhr.upload.onerror = () => {

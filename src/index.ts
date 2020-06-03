@@ -13,7 +13,7 @@ export interface PostData {
   tags?: Tag[];
   files?: File[];
   names?: string[];
-  onProgress?: Function;
+  onUploadedFraction?: Function;
 }
 
 export interface Post {
@@ -91,7 +91,7 @@ export default class ApiClient {
     tags,
     names,
     files,
-    onProgress,
+    onUploadedFraction,
   }: PostData): Promise<Response<Post>> {
     let baseUrl = this.baseUrl;
     let formData = new FormData();
@@ -106,8 +106,8 @@ export default class ApiClient {
       let xhr = new XMLHttpRequest();
       xhr.responseType = "json";
       xhr.upload.onprogress = (event) => {
-        if (onProgress !== undefined) {
-          onProgress(event);
+        if (onUploadedFraction !== undefined) {
+          onUploadedFraction(event.loaded / event.total);
         }
       };
       xhr.upload.onerror = () => {

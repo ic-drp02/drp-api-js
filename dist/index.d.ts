@@ -12,7 +12,7 @@ export interface PostData {
     tags?: Tag[];
     files?: File[];
     names?: string[];
-    onProgress?: Function;
+    onUploadedFraction?: Function;
 }
 export interface Post {
     id: number;
@@ -73,7 +73,7 @@ export default class ApiClient {
     private baseUrl;
     constructor(baseUrl: string);
     getPosts(): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, tags, names, files, onProgress, }: PostData): Promise<Response<Post>>;
+    createPost({ title, summary, content, tags, names, files, onUploadedFraction, }: PostData): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
     getTags(): Promise<Response<Tag[]>>;
