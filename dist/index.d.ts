@@ -70,7 +70,7 @@ export interface Response<T> {
     data?: T;
 }
 export default class ApiClient {
-    private baseUrl;
+    baseUrl: string;
     constructor(baseUrl: string);
     getPosts(): Promise<Response<Post[]>>;
     createPost({ title, summary, content, tags, names, files, onUploadedFraction, }: PostData): Promise<Response<Post>>;

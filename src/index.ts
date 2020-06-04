@@ -78,7 +78,7 @@ export interface Response<T> {
 }
 
 export default class ApiClient {
-  constructor(private baseUrl: string) {}
+  constructor(public baseUrl: string) {}
 
   async getPosts(): Promise<Response<Post[]>> {
     return await this.getListResource("posts");
