@@ -76,7 +76,7 @@ export interface Response<T> {
 export default class ApiClient {
     baseUrl: string;
     constructor(baseUrl: string);
-    getPosts(): Promise<Response<Post[]>>;
+    getPosts(sort?: "default" | "views"): Promise<Response<Post[]>>;
     createPost({ title, summary, content, tags, names, files, onUploadedFraction, }: PostData): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;

@@ -23,9 +23,14 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
-    getPosts() {
+    getPosts(sort) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getListResource("posts");
+            if (!!sort && sort !== "default") {
+                return yield this.getListResource(`posts?sort=${sort}`);
+            }
+            else {
+                return yield this.getListResource("posts");
+            }
         });
     }
     createPost({ title, summary, content, tags, names, files, onUploadedFraction, }) {

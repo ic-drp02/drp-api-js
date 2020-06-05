@@ -85,8 +85,12 @@ export interface Response<T> {
 export default class ApiClient {
   constructor(public baseUrl: string) {}
 
-  async getPosts(): Promise<Response<Post[]>> {
-    return await this.getListResource("posts");
+  async getPosts(sort?: "default" | "views"): Promise<Response<Post[]>> {
+    if (!!sort && sort !== "default") {
+      return await this.getListResource(`posts?sort=${sort}`);
+    } else {
+      return await this.getListResource("posts");
+    }
   }
 
   async createPost({
