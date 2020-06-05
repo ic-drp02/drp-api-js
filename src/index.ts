@@ -52,7 +52,7 @@ export interface Question {
   text: string;
 }
 
-export interface QuestionStats {
+export interface PostStats {
   views: number;
   votes: number;
 }
@@ -259,14 +259,14 @@ export default class ApiClient {
     return this.deleteResource("questions", id);
   }
 
-  async getPostStats(id: number): Promise<Response<QuestionStats>> {
+  async getPostStats(id: number): Promise<Response<PostStats>> {
     return await this.getResource(`posts/${id}/stats`);
   }
 
   async updatePostStats(
     id: number,
-    stats: QuestionStats
-  ): Promise<Response<QuestionStats>> {
+    stats: PostStats
+  ): Promise<Response<PostStats>> {
     return await this.updateResource(`posts/${id}/stats`, stats);
   }
 

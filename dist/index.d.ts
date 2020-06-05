@@ -48,7 +48,7 @@ export interface Question {
     subject: Subject;
     text: string;
 }
-export interface QuestionStats {
+export interface PostStats {
     views: number;
     votes: number;
 }
@@ -96,8 +96,8 @@ export default class ApiClient {
     getQuestion(id: number): Promise<Response<Question>>;
     createQuestions(question: NewQuestion): Promise<Response<Question>>;
     deleteQuestion(id: number): Promise<Response<never>>;
-    getPostStats(id: number): Promise<Response<QuestionStats>>;
-    updatePostStats(id: number, stats: QuestionStats): Promise<Response<QuestionStats>>;
+    getPostStats(id: number): Promise<Response<PostStats>>;
+    updatePostStats(id: number, stats: PostStats): Promise<Response<PostStats>>;
     private getListResource;
     private createResource;
     private getResourceById;
