@@ -52,6 +52,11 @@ export interface Question {
   text: string;
 }
 
+export interface QuestionStats {
+  views: number;
+  votes: number;
+}
+
 export interface Site {
   id: number;
   name: string;
@@ -250,6 +255,17 @@ export default class ApiClient {
     return this.deleteResource("questions", id);
   }
 
+  async getPostStats(id: number): Promise<Response<QuestionStats>> {
+    return await this.getResource(`posts/${id}/stats`);
+  }
+
+  async updatePostStats(
+    id: number,
+    stats: QuestionStats
+  ): Promise<Response<QuestionStats>> {
+    return await this.updateResource(`posts/${id}/stats`, stats);
+  }
+
   private async getListResource<T>(uri: string): Promise<Response<T[]>> {
     const response = await fetch(this.baseUrl + "/api/" + uri);
 
@@ -290,11 +306,36 @@ export default class ApiClient {
     uri: string,
     id: number
   ): Promise<Response<T>> {
-    let response = await fetch(
-      this.baseUrl + "/api/" + uri + "/" + id.toString()
-    );
+    return this.getResource(uri + "/" + id.toString());
+  }
+
+  private async getResource<T>(uri: string): Promise<Response<T>> {
+    let response = await fetch(this.baseUrl + "/api/" + uri);
 
     if (response.status !== 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
+  private async updateResource<T, U>(
+    uri: string,
+    model: U
+  ): Promise<Response<T>> {
+    const response = await fetch(this.baseUrl + "/api/" + uri, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(model),
+    });
+
+    if (response.status != 200) {
       return { success: false, status: response.status };
     }
 

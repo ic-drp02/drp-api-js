@@ -191,6 +191,16 @@ class ApiClient {
             return this.deleteResource("questions", id);
         });
     }
+    getPostStats(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.getResource(`posts/${id}/stats`);
+        });
+    }
+    updatePostStats(id, stats) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.updateResource(`posts/${id}/stats`, stats);
+        });
+    }
     getListResource(uri) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(this.baseUrl + "/api/" + uri);
@@ -224,8 +234,32 @@ class ApiClient {
     }
     getResourceById(uri, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield fetch(this.baseUrl + "/api/" + uri + "/" + id.toString());
+            return this.getResource(uri + "/" + id.toString());
+        });
+    }
+    getResource(uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let response = yield fetch(this.baseUrl + "/api/" + uri);
             if (response.status !== 200) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
+                data: yield response.json(),
+            };
+        });
+    }
+    updateResource(uri, model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(this.baseUrl + "/api/" + uri, {
+                method: "PUT",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(model),
+            });
+            if (response.status != 200) {
                 return { success: false, status: response.status };
             }
             return {
