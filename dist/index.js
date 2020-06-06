@@ -85,6 +85,11 @@ class ApiClient {
             return yield this.createResource("tags", { name });
         });
     }
+    deleteTag(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.deleteResource("tags", id);
+        });
+    }
     getFiles() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(this.baseUrl + "/api/files");

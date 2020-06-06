@@ -145,6 +145,10 @@ export default class ApiClient {
     return await this.createResource("tags", { name });
   }
 
+  async deleteTag(id: number): Promise<Response<never>> {
+    return await this.deleteResource("tags", id);
+  }
+
   async getFiles(): Promise<Response<FileEntity[]>> {
     const response = await fetch(this.baseUrl + "/api/files");
 
