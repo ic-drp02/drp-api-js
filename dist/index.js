@@ -196,6 +196,19 @@ class ApiClient {
             return this.deleteResource("questions", id);
         });
     }
+    registerForNotifications(expo_token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = encodeURIComponent(expo_token);
+            const res = yield fetch(this.baseUrl + "/api/notifications/register?token=" + token, { method: "POST" });
+            if (res.status !== 200) {
+                return {
+                    success: false,
+                    status: res.status,
+                };
+            }
+            return { success: true };
+        });
+    }
     getListResource(uri) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(this.baseUrl + "/api/" + uri);
