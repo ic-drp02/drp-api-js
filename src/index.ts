@@ -250,6 +250,23 @@ export default class ApiClient {
     return this.deleteResource("questions", id);
   }
 
+  async registerForNotifications(expo_token: string): Promise<Response<never>> {
+    const token = encodeURIComponent(expo_token);
+    const res = await fetch(
+      this.baseUrl + "/api/notifications/register?token=" + token,
+      { method: "POST" }
+    );
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        status: res.status,
+      };
+    }
+
+    return { success: true };
+  }
+
   private async getListResource<T>(uri: string): Promise<Response<T[]>> {
     const response = await fetch(this.baseUrl + "/api/" + uri);
 

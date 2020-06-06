@@ -92,6 +92,7 @@ export default class ApiClient {
     getQuestion(id: number): Promise<Response<Question>>;
     createQuestions(question: NewQuestion): Promise<Response<Question>>;
     deleteQuestion(id: number): Promise<Response<never>>;
+    registerForNotifications(expo_token: string): Promise<Response<never>>;
     private getListResource;
     private createResource;
     private getResourceById;
