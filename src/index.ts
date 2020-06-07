@@ -254,6 +254,28 @@ export default class ApiClient {
     return this.deleteResource("questions", id);
   }
 
+  async updateQuestion(id: number, text: string): Promise<Response<Question>> {
+    const response = await fetch(this.baseUrl + "/api/questions/" + id, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text,
+      }),
+    });
+
+    if (response.status !== 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
   async registerForNotifications(expo_token: string): Promise<Response<never>> {
     const token = encodeURIComponent(expo_token);
     const res = await fetch(

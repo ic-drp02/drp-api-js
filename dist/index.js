@@ -196,6 +196,27 @@ class ApiClient {
             return this.deleteResource("questions", id);
         });
     }
+    updateQuestion(id, text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(this.baseUrl + "/api/questions/" + id, {
+                method: "PUT",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text,
+                }),
+            });
+            if (response.status !== 200) {
+                return { success: false, status: response.status };
+            }
+            return {
+                success: true,
+                data: yield response.json(),
+            };
+        });
+    }
     registerForNotifications(expo_token) {
         return __awaiter(this, void 0, void 0, function* () {
             const token = encodeURIComponent(expo_token);
