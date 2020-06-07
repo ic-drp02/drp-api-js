@@ -276,6 +276,28 @@ export default class ApiClient {
     };
   }
 
+  async resolveQuestion(id: number): Promise<Response<Question>> {
+    const response = await fetch(
+      this.baseUrl + "/api/questions/" + id + "/resolve",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      return { success: false, status: response.status };
+    }
+
+    return {
+      success: true,
+      data: await response.json(),
+    };
+  }
+
   async registerForNotifications(expo_token: string): Promise<Response<never>> {
     const token = encodeURIComponent(expo_token);
     const res = await fetch(
