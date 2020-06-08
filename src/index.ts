@@ -137,6 +137,18 @@ export default class ApiClient {
     return this.deleteResource("posts", id);
   }
 
+  async searchPosts(
+    searched: string,
+    page?: number,
+    results_per_page?: number
+  ): Promise<Response<Post[]>> {
+    let url = `search/posts/${searched}`;
+    if (page !== undefined && results_per_page !== undefined) {
+      url = url + `?page=${page}&results_per_page=${results_per_page}`;
+    }
+    return this.getListResource(url);
+  }
+
   async getTags(): Promise<Response<Tag[]>> {
     return await this.getListResource("tags");
   }

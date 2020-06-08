@@ -76,6 +76,7 @@ export default class ApiClient {
     createPost({ title, summary, content, tags, names, files, onUploadedFraction, }: PostData): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
+    searchPosts(searched: string, page?: number, results_per_page?: number): Promise<Response<Post[]>>;
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;
     deleteTag(id: number): Promise<Response<never>>;
