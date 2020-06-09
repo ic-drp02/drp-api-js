@@ -36,6 +36,11 @@ export interface FileEntity {
   post: number;
 }
 
+export interface FileWithPost {
+  file: FileEntity;
+  post: Post;
+}
+
 export interface NewQuestion {
   site: string;
   grade: Grade;
@@ -143,6 +148,18 @@ export default class ApiClient {
     results_per_page?: number
   ): Promise<Response<Post[]>> {
     let url = `search/posts/${searched}`;
+    if (page !== undefined && results_per_page !== undefined) {
+      url = url + `?page=${page}&results_per_page=${results_per_page}`;
+    }
+    return this.getListResource(url);
+  }
+
+  async searchFiles(
+    searched: string,
+    page?: number,
+    results_per_page?: number
+  ): Promise<Response<FileWithPost[]>> {
+    let url = `search/files/${searched}`;
     if (page !== undefined && results_per_page !== undefined) {
       url = url + `?page=${page}&results_per_page=${results_per_page}`;
     }

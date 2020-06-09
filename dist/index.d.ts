@@ -31,6 +31,10 @@ export interface FileEntity {
     name: string;
     post: number;
 }
+export interface FileWithPost {
+    file: FileEntity;
+    post: Post;
+}
 export interface NewQuestion {
     site: string;
     grade: Grade;
@@ -77,6 +81,7 @@ export default class ApiClient {
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
     searchPosts(searched: string, page?: number, results_per_page?: number): Promise<Response<Post[]>>;
+    searchFiles(searched: string, page?: number, results_per_page?: number): Promise<Response<FileWithPost[]>>;
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;
     deleteTag(id: number): Promise<Response<never>>;

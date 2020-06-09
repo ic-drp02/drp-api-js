@@ -84,6 +84,15 @@ class ApiClient {
             return this.getListResource(url);
         });
     }
+    searchFiles(searched, page, results_per_page) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = `search/files/${searched}`;
+            if (page !== undefined && results_per_page !== undefined) {
+                url = url + `?page=${page}&results_per_page=${results_per_page}`;
+            }
+            return this.getListResource(url);
+        });
+    }
     getTags() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.getListResource("tags");
