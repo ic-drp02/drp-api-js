@@ -1,14 +1,10 @@
 export interface NewPost {
-    title: string;
-    summary?: string;
-    content: string;
-    tags?: string[];
-}
-export interface PostData {
     id: number;
     title: string;
     summary: string;
     content: string;
+    is_guideline?: boolean;
+    superseds?: number;
     tags?: Tag[];
     files?: File[];
     names?: string[];
@@ -19,8 +15,12 @@ export interface Post {
     title: string;
     summary: string;
     content: string;
-    tags?: Tag[];
-    files?: File[];
+    is_guideline: boolean;
+    superseds: number;
+    superseded_by: number;
+    created_at: string;
+    tags: Tag[];
+    files: File[];
 }
 export interface Tag {
     id: number;
@@ -77,10 +77,11 @@ export default class ApiClient {
     baseUrl: string;
     constructor(baseUrl: string);
     getPosts(): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, tags, names, files, onUploadedFraction, }: PostData): Promise<Response<Post>>;
+    getGuidelines(): Promise<Response<Post[]>>;
+    createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
-    searchPosts(searched: string, page?: number, results_per_page?: number): Promise<Response<Post[]>>;
+    searchPosts(searched: string, page?: number, results_per_page?: number, guidelines_only?: boolean): Promise<Response<Post[]>>;
     searchFiles(searched: string, page?: number, results_per_page?: number): Promise<Response<FileWithPost[]>>;
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;

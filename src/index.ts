@@ -1,15 +1,10 @@
 export interface NewPost {
-  title: string;
-  summary?: string;
-  content: string;
-  tags?: string[];
-}
-
-export interface PostData {
   id: number;
   title: string;
   summary: string;
   content: string;
+  is_guideline?: boolean;
+  superseds?: number;
   tags?: Tag[];
   files?: File[];
   names?: string[];
@@ -21,8 +16,12 @@ export interface Post {
   title: string;
   summary: string;
   content: string;
-  tags?: Tag[];
-  files?: File[];
+  is_guideline: boolean;
+  superseds: number;
+  superseded_by: number;
+  created_at: string;
+  tags: Tag[];
+  files: File[];
 }
 
 export interface Tag {
@@ -89,20 +88,32 @@ export default class ApiClient {
     return await this.getListResource("posts");
   }
 
+  async getGuidelines(): Promise<Response<Post[]>> {
+    return await this.getListResource("guidelines");
+  }
+
   async createPost({
     title,
     summary,
     content,
+    is_guideline,
+    superseds,
     tags,
     names,
     files,
     onUploadedFraction,
-  }: PostData): Promise<Response<Post>> {
+  }: NewPost): Promise<Response<Post>> {
     let baseUrl = this.baseUrl;
     let formData = new FormData();
     formData.append("title", title);
     formData.append("summary", summary);
     formData.append("content", content);
+    if (is_guideline === true) {
+      formData.append("is_guideline", "true");
+    }
+    if (superseds !== undefined) {
+      formData.append("superseds", String(superseds));
+    }
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
@@ -145,11 +156,15 @@ export default class ApiClient {
   async searchPosts(
     searched: string,
     page?: number,
-    results_per_page?: number
+    results_per_page?: number,
+    guidelines_only?: boolean
   ): Promise<Response<Post[]>> {
     let url = `search/posts/${searched}`;
     if (page !== undefined && results_per_page !== undefined) {
       url = url + `?page=${page}&results_per_page=${results_per_page}`;
+    }
+    if (guidelines_only === true) {
+      url = url + "&guidelines_only=true";
     }
     return this.getListResource(url);
   }
