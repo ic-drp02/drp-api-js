@@ -23,14 +23,22 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
-    getPosts() {
+    getPosts(include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getListResource("posts");
+            let url = "posts";
+            if (include_old === true) {
+                url = url + "?include_old=true";
+            }
+            return yield this.getListResource(url);
         });
     }
-    getGuidelines() {
+    getGuidelines(include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getListResource("guidelines");
+            let url = "guidelines";
+            if (include_old === true) {
+                url = url + "?include_old=true";
+            }
+            return yield this.getListResource(url);
         });
     }
     getGuidelineRevisions(id, reverse) {
@@ -95,23 +103,17 @@ class ApiClient {
             return this.deleteResource("posts", id);
         });
     }
-    searchPosts(searched, page, results_per_page, guidelines_only) {
+    searchPosts(searched, page, results_per_page, guidelines_only, include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = `search/posts/${searched}`;
+            let url = `search/posts/${searched}?`;
             if (page !== undefined && results_per_page !== undefined) {
-                url = url + `?page=${page}&results_per_page=${results_per_page}`;
+                url = url + `page=${page}&results_per_page=${results_per_page}`;
             }
             if (guidelines_only === true) {
                 url = url + "&guidelines_only=true";
             }
-            return this.getListResource(url);
-        });
-    }
-    searchFiles(searched, page, results_per_page) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let url = `search/files/${searched}`;
-            if (page !== undefined && results_per_page !== undefined) {
-                url = url + `?page=${page}&results_per_page=${results_per_page}`;
+            if (include_old === true) {
+                url = url + "&include_old=true";
             }
             return this.getListResource(url);
         });

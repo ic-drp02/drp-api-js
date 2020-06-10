@@ -84,12 +84,20 @@ export interface Response<T> {
 export default class ApiClient {
   constructor(public baseUrl: string) {}
 
-  async getPosts(): Promise<Response<Post[]>> {
-    return await this.getListResource("posts");
+  async getPosts(include_old?: boolean): Promise<Response<Post[]>> {
+    let url = "posts"
+    if (include_old === true) {
+      url = url + "?include_old=true"
+    }
+    return await this.getListResource(url);
   }
 
-  async getGuidelines(): Promise<Response<Post[]>> {
-    return await this.getListResource("guidelines");
+  async getGuidelines(include_old?: boolean): Promise<Response<Post[]>> {
+    let url = "guidelines"
+    if (include_old === true) {
+      url = url + "?include_old=true"
+    }
+    return await this.getListResource(url);
   }
 
   async getGuidelineRevisions(
@@ -168,26 +176,18 @@ export default class ApiClient {
     searched: string,
     page?: number,
     results_per_page?: number,
-    guidelines_only?: boolean
+    guidelines_only?: boolean,
+    include_old?: boolean,
   ): Promise<Response<Post[]>> {
-    let url = `search/posts/${searched}`;
+    let url = `search/posts/${searched}?`;
     if (page !== undefined && results_per_page !== undefined) {
-      url = url + `?page=${page}&results_per_page=${results_per_page}`;
+      url = url + `page=${page}&results_per_page=${results_per_page}`;
     }
     if (guidelines_only === true) {
       url = url + "&guidelines_only=true";
     }
-    return this.getListResource(url);
-  }
-
-  async searchFiles(
-    searched: string,
-    page?: number,
-    results_per_page?: number
-  ): Promise<Response<FileWithPost[]>> {
-    let url = `search/files/${searched}`;
-    if (page !== undefined && results_per_page !== undefined) {
-      url = url + `?page=${page}&results_per_page=${results_per_page}`;
+    if (include_old === true) {
+      url = url + "&include_old=true"
     }
     return this.getListResource(url);
   }
