@@ -23,21 +23,25 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
-    getPosts(include_old) {
+    addAttributes(tag, include_old) {
+        let url = "";
+        if (tag !== undefined) {
+            url = url + `tag=${tag}`;
+        }
+        if (include_old === true) {
+            url = url + "&include_old=true";
+        }
+        return url;
+    }
+    getPosts(tag, include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "posts";
-            if (include_old === true) {
-                url = url + "?include_old=true";
-            }
+            let url = "posts?" + this.addAttributes(tag, include_old);
             return yield this.getListResource(url);
         });
     }
-    getGuidelines(include_old) {
+    getGuidelines(tag, include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "guidelines";
-            if (include_old === true) {
-                url = url + "?include_old=true";
-            }
+            let url = "posts?guidelines_only=true&" + this.addAttributes(tag, include_old);
             return yield this.getListResource(url);
         });
     }

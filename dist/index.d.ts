@@ -76,8 +76,9 @@ export interface Response<T> {
 export default class ApiClient {
     baseUrl: string;
     constructor(baseUrl: string);
-    getPosts(include_old?: boolean): Promise<Response<Post[]>>;
-    getGuidelines(include_old?: boolean): Promise<Response<Post[]>>;
+    addAttributes(tag?: number, include_old?: boolean): string;
+    getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
+    getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
     createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;

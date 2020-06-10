@@ -84,19 +84,24 @@ export interface Response<T> {
 export default class ApiClient {
   constructor(public baseUrl: string) {}
 
-  async getPosts(include_old?: boolean): Promise<Response<Post[]>> {
-    let url = "posts"
-    if (include_old === true) {
-      url = url + "?include_old=true"
+  addAttributes(tag?: number, include_old?: boolean) : string {
+    let url = ""
+    if (tag !== undefined) {
+      url = url + `tag=${tag}`
     }
+    if (include_old === true) {
+      url = url + "&include_old=true"
+    }
+    return url
+  }
+
+  async getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>> {
+    let url = "posts?" + this.addAttributes(tag, include_old)
     return await this.getListResource(url);
   }
 
-  async getGuidelines(include_old?: boolean): Promise<Response<Post[]>> {
-    let url = "guidelines"
-    if (include_old === true) {
-      url = url + "?include_old=true"
-    }
+  async getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>> {
+    let url = "posts?guidelines_only=true&" + this.addAttributes(tag, include_old)
     return await this.getListResource(url);
   }
 
