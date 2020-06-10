@@ -24,6 +24,14 @@ export interface Post {
   files: File[];
 }
 
+export interface Search {
+  searched: string;
+  page?: number;
+  results_per_page?: number;
+  guidelines_only?: boolean;
+  include_old?: boolean;
+}
+
 export interface Tag {
   id: number;
   name: string;
@@ -84,24 +92,31 @@ export interface Response<T> {
 export default class ApiClient {
   constructor(public baseUrl: string) {}
 
-  addAttributes(tag?: number, include_old?: boolean) : string {
-    let url = ""
+  addAttributes(tag?: number, include_old?: boolean): string {
+    let url = "";
     if (tag !== undefined) {
-      url = url + `tag=${tag}`
+      url = url + `tag=${tag}`;
     }
     if (include_old === true) {
-      url = url + "&include_old=true"
+      url = url + "&include_old=true";
     }
-    return url
+    return url;
   }
 
-  async getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>> {
-    let url = "posts?" + this.addAttributes(tag, include_old)
+  async getPosts(
+    tag?: number,
+    include_old?: boolean
+  ): Promise<Response<Post[]>> {
+    let url = "posts?" + this.addAttributes(tag, include_old);
     return await this.getListResource(url);
   }
 
-  async getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>> {
-    let url = "posts?guidelines_only=true&" + this.addAttributes(tag, include_old)
+  async getGuidelines(
+    tag?: number,
+    include_old?: boolean
+  ): Promise<Response<Post[]>> {
+    let url =
+      "posts?guidelines_only=true&" + this.addAttributes(tag, include_old);
     return await this.getListResource(url);
   }
 
@@ -177,13 +192,13 @@ export default class ApiClient {
     return this.deleteResource("posts", id);
   }
 
-  async searchPosts(
-    searched: string,
-    page?: number,
-    results_per_page?: number,
-    guidelines_only?: boolean,
-    include_old?: boolean,
-  ): Promise<Response<Post[]>> {
+  async searchPosts({
+    searched,
+    page,
+    results_per_page,
+    guidelines_only,
+    include_old,
+  }: Search): Promise<Response<Post[]>> {
     let url = `search/posts/${searched}?`;
     if (page !== undefined && results_per_page !== undefined) {
       url = url + `page=${page}&results_per_page=${results_per_page}`;
@@ -192,7 +207,7 @@ export default class ApiClient {
       url = url + "&guidelines_only=true";
     }
     if (include_old === true) {
-      url = url + "&include_old=true"
+      url = url + "&include_old=true";
     }
     return this.getListResource(url);
   }

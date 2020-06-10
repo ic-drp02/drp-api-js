@@ -107,7 +107,7 @@ class ApiClient {
             return this.deleteResource("posts", id);
         });
     }
-    searchPosts(searched, page, results_per_page, guidelines_only, include_old) {
+    searchPosts({ searched, page, results_per_page, guidelines_only, include_old, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let url = `search/posts/${searched}?`;
             if (page !== undefined && results_per_page !== undefined) {
