@@ -33,6 +33,15 @@ class ApiClient {
             return yield this.getListResource("guidelines");
         });
     }
+    getGuidelineRevisions(id, reverse) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = `guidelines/{id}`;
+            if (reverse === true) {
+                url = url + "?reverse=true";
+            }
+            return yield this.getListResource(url);
+        });
+    }
     createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;

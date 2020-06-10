@@ -78,6 +78,7 @@ export default class ApiClient {
     constructor(baseUrl: string);
     getPosts(): Promise<Response<Post[]>>;
     getGuidelines(): Promise<Response<Post[]>>;
+    getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
     createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
