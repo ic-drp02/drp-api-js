@@ -23,18 +23,46 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
-    getPosts() {
+    getPosts(include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.getListResource("posts");
+            let url = "posts";
+            if (include_old === true) {
+                url = url + "?include_old=true";
+            }
+            return yield this.getListResource(url);
         });
     }
-    createPost({ title, summary, content, tags, names, files, onUploadedFraction, }) {
+    getGuidelines(include_old) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = "guidelines";
+            if (include_old === true) {
+                url = url + "?include_old=true";
+            }
+            return yield this.getListResource(url);
+        });
+    }
+    getGuidelineRevisions(id, reverse) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = `guidelines/{id}`;
+            if (reverse === true) {
+                url = url + "?reverse=true";
+            }
+            return yield this.getListResource(url);
+        });
+    }
+    createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;
             let formData = new FormData();
             formData.append("title", title);
             formData.append("summary", summary);
             formData.append("content", content);
+            if (is_guideline === true) {
+                formData.append("is_guideline", "true");
+            }
+            if (superseds !== undefined) {
+                formData.append("superseds", String(superseds));
+            }
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
             files === null || files === void 0 ? void 0 : files.forEach((file) => formData.append("files", file));
@@ -75,20 +103,17 @@ class ApiClient {
             return this.deleteResource("posts", id);
         });
     }
-    searchPosts(searched, page, results_per_page) {
+    searchPosts(searched, page, results_per_page, guidelines_only, include_old) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = `search/posts/${searched}`;
+            let url = `search/posts/${searched}?`;
             if (page !== undefined && results_per_page !== undefined) {
-                url = url + `?page=${page}&results_per_page=${results_per_page}`;
+                url = url + `page=${page}&results_per_page=${results_per_page}`;
             }
-            return this.getListResource(url);
-        });
-    }
-    searchFiles(searched, page, results_per_page) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let url = `search/files/${searched}`;
-            if (page !== undefined && results_per_page !== undefined) {
-                url = url + `?page=${page}&results_per_page=${results_per_page}`;
+            if (guidelines_only === true) {
+                url = url + "&guidelines_only=true";
+            }
+            if (include_old === true) {
+                url = url + "&include_old=true";
             }
             return this.getListResource(url);
         });
