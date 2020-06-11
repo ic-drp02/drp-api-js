@@ -30,6 +30,7 @@ export interface Search {
   results_per_page?: number;
   guidelines_only?: boolean;
   include_old?: boolean;
+  tag?: string;
 }
 
 export interface Tag {
@@ -198,6 +199,7 @@ export default class ApiClient {
     results_per_page,
     guidelines_only,
     include_old,
+    tag,
   }: Search): Promise<Response<Post[]>> {
     let url = `search/posts/${searched}?`;
     if (page !== undefined && results_per_page !== undefined) {
@@ -208,6 +210,9 @@ export default class ApiClient {
     }
     if (include_old === true) {
       url = url + "&include_old=true";
+    }
+    if (tag !== undefined) {
+      url = url + `&tag=${tag}`;
     }
     return this.getListResource(url);
   }
