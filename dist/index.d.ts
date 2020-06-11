@@ -4,7 +4,7 @@ export interface NewPost {
     summary: string;
     content: string;
     is_guideline?: boolean;
-    superseds?: number;
+    superseding?: number;
     tags?: Tag[];
     files?: File[];
     names?: string[];
@@ -16,7 +16,7 @@ export interface Post {
     summary: string;
     content: string;
     is_guideline: boolean;
-    superseds: number;
+    superseding: number;
     superseded_by: number;
     created_at: string;
     tags: Tag[];
@@ -88,7 +88,7 @@ export default class ApiClient {
     getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
+    createPost({ title, summary, content, is_guideline, superseding, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
     searchPosts({ searched, page, results_per_page, guidelines_only, include_old, tag, }: Search): Promise<Response<Post[]>>;

@@ -4,7 +4,7 @@ export interface NewPost {
   summary: string;
   content: string;
   is_guideline?: boolean;
-  superseds?: number;
+  superseding?: number;
   tags?: Tag[];
   files?: File[];
   names?: string[];
@@ -17,7 +17,7 @@ export interface Post {
   summary: string;
   content: string;
   is_guideline: boolean;
-  superseds: number;
+  superseding: number;
   superseded_by: number;
   created_at: string;
   tags: Tag[];
@@ -137,7 +137,7 @@ export default class ApiClient {
     summary,
     content,
     is_guideline,
-    superseds,
+    superseding,
     tags,
     names,
     files,
@@ -151,8 +151,8 @@ export default class ApiClient {
     if (is_guideline === true) {
       formData.append("is_guideline", "true");
     }
-    if (superseds !== undefined) {
-      formData.append("superseds", String(superseds));
+    if (superseding !== undefined) {
+      formData.append("superseding", String(superseding));
     }
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));

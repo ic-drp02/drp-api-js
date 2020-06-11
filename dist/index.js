@@ -54,7 +54,7 @@ class ApiClient {
             return yield this.getListResource(url);
         });
     }
-    createPost({ title, summary, content, is_guideline, superseds, tags, names, files, onUploadedFraction, }) {
+    createPost({ title, summary, content, is_guideline, superseding, tags, names, files, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;
             let formData = new FormData();
@@ -64,8 +64,8 @@ class ApiClient {
             if (is_guideline === true) {
                 formData.append("is_guideline", "true");
             }
-            if (superseds !== undefined) {
-                formData.append("superseds", String(superseds));
+            if (superseding !== undefined) {
+                formData.append("superseding", String(superseding));
             }
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
