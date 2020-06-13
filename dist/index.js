@@ -47,7 +47,7 @@ class ApiClient {
     }
     getGuidelineRevisions(id, reverse) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = `guidelines/{id}`;
+            let url = `guidelines/${id}`;
             if (reverse === true) {
                 url = url + "?reverse=true";
             }

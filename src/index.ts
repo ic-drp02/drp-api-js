@@ -125,7 +125,7 @@ export default class ApiClient {
     id: number,
     reverse?: boolean
   ): Promise<Response<Post[]>> {
-    let url = `guidelines/{id}`;
+    let url = `guidelines/${id}`;
     if (reverse === true) {
       url = url + "?reverse=true";
     }
