@@ -107,6 +107,11 @@ class ApiClient {
             return this.deleteResource("posts", id);
         });
     }
+    deleteGuidelineRevisions(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.deleteResource("guidelines", id);
+        });
+    }
     searchPosts({ searched, page, results_per_page, guidelines_only, include_old, tag, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let url = `search/posts/${searched}?`;

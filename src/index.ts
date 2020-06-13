@@ -193,6 +193,10 @@ export default class ApiClient {
     return this.deleteResource("posts", id);
   }
 
+  async deleteGuidelineRevisions(id: number): Promise<Response<never>> {
+    return this.deleteResource("guidelines", id);
+  }
+
   async searchPosts({
     searched,
     page,
