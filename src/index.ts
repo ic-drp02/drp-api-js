@@ -217,7 +217,7 @@ export default class ApiClient {
   }
 
   async getUsers(): Promise<Response<User[]>> {
-    const res = await fetch("/api/users", {
+    const res = await fetch(this.baseUrl + "/api/users/", {
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
@@ -231,7 +231,7 @@ export default class ApiClient {
   }
 
   async getUser(id: number): Promise<Response<User>> {
-    const res = await fetch("/api/users/" + id, {
+    const res = await fetch(this.baseUrl + "/api/users/" + id, {
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
@@ -248,7 +248,7 @@ export default class ApiClient {
     id: number,
     model: { password?: string; role?: UserRole }
   ): Promise<Response<User>> {
-    const res = await fetch("/api/users/" + id, {
+    const res = await fetch(this.baseUrl + "/api/users/" + id, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -265,7 +265,7 @@ export default class ApiClient {
   }
 
   async deleteUser(id: number): Promise<Response<User>> {
-    const res = await fetch("/api/users/" + id, {
+    const res = await fetch(this.baseUrl + "/api/users/" + id, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${this.token}`,

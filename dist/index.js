@@ -122,7 +122,7 @@ class ApiClient {
     }
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("/api/users", {
+            const res = yield fetch(this.baseUrl + "/api/users/", {
                 headers: {
                     Authorization: `Bearer ${this.token}`,
                 },
@@ -137,7 +137,7 @@ class ApiClient {
     }
     getUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("/api/users/" + id, {
+            const res = yield fetch(this.baseUrl + "/api/users/" + id, {
                 headers: {
                     Authorization: `Bearer ${this.token}`,
                 },
@@ -152,7 +152,7 @@ class ApiClient {
     }
     updateUser(id, model) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("/api/users/" + id, {
+            const res = yield fetch(this.baseUrl + "/api/users/" + id, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${this.token}`,
@@ -170,7 +170,7 @@ class ApiClient {
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("/api/users/" + id, {
+            const res = yield fetch(this.baseUrl + "/api/users/" + id, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${this.token}`,
