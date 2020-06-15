@@ -117,7 +117,7 @@ export default class ApiClient {
     getPosts(tag?: number, include_old?: boolean, per_page?: number, page?: number): Promise<Response<Post[]>>;
     getMultiplePosts(ids: number[]): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
-    getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
+    getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
     createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;

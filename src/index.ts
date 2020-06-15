@@ -325,10 +325,7 @@ export default class ApiClient {
     return await this.getListResource(url);
   }
 
-  async getGuidelineRevisions(
-    id: number,
-    reverse?: boolean
-  ): Promise<Response<Post[]>> {
+  async getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>> {
     let url = `revisions/${id}`;
     if (reverse === true) {
       url = url + "?reverse=true";

@@ -218,7 +218,7 @@ class ApiClient {
             return yield this.getListResource(url);
         });
     }
-    getGuidelineRevisions(id, reverse) {
+    getRevisions(id, reverse) {
         return __awaiter(this, void 0, void 0, function* () {
             let url = `revisions/${id}`;
             if (reverse === true) {
