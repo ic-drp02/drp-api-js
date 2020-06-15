@@ -306,6 +306,25 @@ class ApiClient {
             return yield this.deleteResource("tags", id);
         });
     }
+    renameTag(id, name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("/api/tags/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                }),
+            });
+            if (res.status !== 200) {
+                return { success: false, status: res.status };
+            }
+            else {
+                return { success: true, data: yield res.json() };
+            }
+        });
+    }
     getFiles() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(this.baseUrl + "/api/files");

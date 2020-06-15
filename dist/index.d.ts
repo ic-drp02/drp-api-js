@@ -125,6 +125,7 @@ export default class ApiClient {
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;
     deleteTag(id: number): Promise<Response<never>>;
+    renameTag(id: number, name: string): Promise<Response<Tag>>;
     getFiles(): Promise<Response<FileEntity[]>>;
     createFile(file: File, name: string, post: number): Promise<Response<FileEntity>>;
     deleteFile(id: number): Promise<Response<undefined>>;

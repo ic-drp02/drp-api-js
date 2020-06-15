@@ -419,6 +419,24 @@ export default class ApiClient {
     return await this.deleteResource("tags", id);
   }
 
+  async renameTag(id: number, name: string): Promise<Response<Tag>> {
+    const res = await fetch("/api/tags/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    });
+
+    if (res.status !== 200) {
+      return { success: false, status: res.status };
+    } else {
+      return { success: true, data: await res.json() };
+    }
+  }
+
   async getFiles(): Promise<Response<FileEntity[]>> {
     const response = await fetch(this.baseUrl + "/api/files");
 
