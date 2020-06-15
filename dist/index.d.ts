@@ -76,14 +76,27 @@ export interface Subject {
     id: number;
     name: string;
 }
-export interface Response<T> {
+export interface Token {
+    id: number;
+    token: string;
+    role: "normal" | "admin";
+    expires: number;
+}
+export interface Error {
+    type?: string;
+    message?: string;
+}
+export interface Response<T, E = Error> {
     success: boolean;
     status?: number;
     data?: T;
+    error?: E;
 }
 export default class ApiClient {
     baseUrl: string;
     constructor(baseUrl: string);
+    authenticate(email: string, password: string): Promise<Response<Token>>;
+    registerUser(email: string, password: string): Promise<Response<never>>;
     addAttributes(tag?: number, include_old?: boolean): string;
     getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;

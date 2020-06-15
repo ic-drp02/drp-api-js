@@ -84,14 +84,121 @@ export interface Subject {
   name: string;
 }
 
-export interface Response<T> {
+export interface Token {
+  id: number;
+  token: string;
+  role: "normal" | "admin";
+  expires: number;
+}
+
+export interface Error {
+  type?: string;
+  message?: string;
+}
+
+export interface Response<T, E = Error> {
   success: boolean;
   status?: number;
   data?: T;
+  error?: E;
 }
 
 export default class ApiClient {
   constructor(public baseUrl: string) {}
+
+  async authenticate(
+    email: string,
+    password: string
+  ): Promise<Response<Token>> {
+    let res;
+    try {
+      res = await fetch("/auth/authenticate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+    } catch {
+      return {
+        success: false,
+        error: {
+          type: "Unknown",
+          message: "An error occurred while communicating with the server.",
+        },
+      };
+    }
+
+    const body = await res.json();
+
+    if (res.status !== 200) {
+      if (!!body.type) {
+        return { success: false, status: res.status, error: body };
+      } else {
+        return {
+          success: false,
+          status: res.status,
+          error: {
+            type: "Unknown",
+            message: "An error occurred while trying to log in.",
+          },
+        };
+      }
+    } else {
+      return {
+        success: true,
+        data: body,
+      };
+    }
+  }
+
+  async registerUser(
+    email: string,
+    password: string
+  ): Promise<Response<never>> {
+    let res;
+    try {
+      res = await fetch(this.baseUrl + "/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+    } catch {
+      return {
+        success: false,
+        error: {
+          type: "Unknown",
+          message: "An eerror occurred while communicating with the server.",
+        },
+      };
+    }
+
+    if (res.status !== 200) {
+      const body = await res.json();
+      if (!!body.type) {
+        return { success: false, status: res.status, error: body };
+      } else {
+        return {
+          success: false,
+          status: res.status,
+          error: {
+            type: "Unknown",
+            message: "An error occurred while creating your account.",
+          },
+        };
+      }
+    } else {
+      return {
+        success: true,
+      };
+    }
+  }
 
   addAttributes(tag?: number, include_old?: boolean): string {
     let url = "";

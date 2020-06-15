@@ -23,6 +23,99 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
+    authenticate(email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res;
+            try {
+                res = yield fetch("/auth/authenticate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                });
+            }
+            catch (_a) {
+                return {
+                    success: false,
+                    error: {
+                        type: "Unknown",
+                        message: "An error occurred while communicating with the server.",
+                    },
+                };
+            }
+            const body = yield res.json();
+            if (res.status !== 200) {
+                if (!!body.type) {
+                    return { success: false, status: res.status, error: body };
+                }
+                else {
+                    return {
+                        success: false,
+                        status: res.status,
+                        error: {
+                            type: "Unknown",
+                            message: "An error occurred while trying to log in.",
+                        },
+                    };
+                }
+            }
+            else {
+                return {
+                    success: true,
+                    data: body,
+                };
+            }
+        });
+    }
+    registerUser(email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res;
+            try {
+                res = yield fetch(this.baseUrl + "/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                });
+            }
+            catch (_a) {
+                return {
+                    success: false,
+                    error: {
+                        type: "Unknown",
+                        message: "An eerror occurred while communicating with the server.",
+                    },
+                };
+            }
+            if (res.status !== 200) {
+                const body = yield res.json();
+                if (!!body.type) {
+                    return { success: false, status: res.status, error: body };
+                }
+                else {
+                    return {
+                        success: false,
+                        status: res.status,
+                        error: {
+                            type: "Unknown",
+                            message: "An error occurred while creating your account.",
+                        },
+                    };
+                }
+            }
+            else {
+                return {
+                    success: true,
+                };
+            }
+        });
+    }
     addAttributes(tag, include_old) {
         let url = "";
         if (tag !== undefined) {
