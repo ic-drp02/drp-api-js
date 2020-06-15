@@ -64,6 +64,7 @@ class ApiClient {
                 }
             }
             else {
+                this.token = body.token;
                 return {
                     success: true,
                     data: body,
@@ -113,6 +114,70 @@ class ApiClient {
                 return {
                     success: true,
                 };
+            }
+        });
+    }
+    getUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("/api/users", {
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (res.status !== 200) {
+                return { success: false, status: res.status };
+            }
+            else {
+                return { success: true, data: yield res.json() };
+            }
+        });
+    }
+    getUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("/api/users/" + id, {
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (res.status !== 200) {
+                return { success: false, status: res.status };
+            }
+            else {
+                return { success: true, data: yield res.json() };
+            }
+        });
+    }
+    updateUser(id, model) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("/api/users/" + id, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(model),
+            });
+            if (res.status !== 200) {
+                return { success: false, status: res.status };
+            }
+            else {
+                return { success: true, data: yield res.json() };
+            }
+        });
+    }
+    deleteUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("/api/users/" + id, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (res.status !== 204) {
+                return { success: false, status: res.status };
+            }
+            else {
+                return { success: true, data: yield res.json() };
             }
         });
     }

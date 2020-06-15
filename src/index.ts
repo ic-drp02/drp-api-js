@@ -84,11 +84,20 @@ export interface Subject {
   name: string;
 }
 
+export type UserRole = "user" | "admin";
+
 export interface Token {
   id: number;
   token: string;
-  role: "normal" | "admin";
+  role: UserRole;
   expires: number;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  role: UserRole;
+  confirmed: boolean;
 }
 
 export interface Error {
@@ -104,6 +113,8 @@ export interface Response<T, E = Error> {
 }
 
 export default class ApiClient {
+  private token?: string;
+
   constructor(public baseUrl: string) {}
 
   async authenticate(
@@ -148,6 +159,7 @@ export default class ApiClient {
         };
       }
     } else {
+      this.token = body.token;
       return {
         success: true,
         data: body,
@@ -197,6 +209,69 @@ export default class ApiClient {
       return {
         success: true,
       };
+    }
+  }
+
+  async getUsers(): Promise<Response<User[]>> {
+    const res = await fetch("/api/users", {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+
+    if (res.status !== 200) {
+      return { success: false, status: res.status };
+    } else {
+      return { success: true, data: await res.json() };
+    }
+  }
+
+  async getUser(id: number): Promise<Response<User>> {
+    const res = await fetch("/api/users/" + id, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+
+    if (res.status !== 200) {
+      return { success: false, status: res.status };
+    } else {
+      return { success: true, data: await res.json() };
+    }
+  }
+
+  async updateUser(
+    id: number,
+    model: { password?: string; role?: UserRole }
+  ): Promise<Response<User>> {
+    const res = await fetch("/api/users/" + id, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(model),
+    });
+
+    if (res.status !== 200) {
+      return { success: false, status: res.status };
+    } else {
+      return { success: true, data: await res.json() };
+    }
+  }
+
+  async deleteUser(id: number): Promise<Response<User>> {
+    const res = await fetch("/api/users/" + id, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+
+    if (res.status !== 204) {
+      return { success: false, status: res.status };
+    } else {
+      return { success: true, data: await res.json() };
     }
   }
 

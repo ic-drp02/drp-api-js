@@ -76,11 +76,18 @@ export interface Subject {
     id: number;
     name: string;
 }
+export declare type UserRole = "user" | "admin";
 export interface Token {
     id: number;
     token: string;
-    role: "normal" | "admin";
+    role: UserRole;
     expires: number;
+}
+export interface User {
+    id: number;
+    email: string;
+    role: UserRole;
+    confirmed: boolean;
 }
 export interface Error {
     type?: string;
@@ -94,9 +101,17 @@ export interface Response<T, E = Error> {
 }
 export default class ApiClient {
     baseUrl: string;
+    private token?;
     constructor(baseUrl: string);
     authenticate(email: string, password: string): Promise<Response<Token>>;
     registerUser(email: string, password: string): Promise<Response<never>>;
+    getUsers(): Promise<Response<User[]>>;
+    getUser(id: number): Promise<Response<User>>;
+    updateUser(id: number, model: {
+        password?: string;
+        role?: UserRole;
+    }): Promise<Response<User>>;
+    deleteUser(id: number): Promise<Response<User>>;
     addAttributes(tag?: number, include_old?: boolean): string;
     getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
