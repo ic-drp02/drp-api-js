@@ -103,6 +103,7 @@ export default class ApiClient {
     baseUrl: string;
     private token?;
     constructor(baseUrl: string);
+    setAuthToken(token?: string): void;
     authenticate(email: string, password: string): Promise<Response<Token>>;
     registerUser(email: string, password: string): Promise<Response<never>>;
     getUsers(): Promise<Response<User[]>>;

@@ -117,6 +117,10 @@ export default class ApiClient {
 
   constructor(public baseUrl: string) {}
 
+  setAuthToken(token?: string) {
+    this.token = token;
+  }
+
   async authenticate(
     email: string,
     password: string

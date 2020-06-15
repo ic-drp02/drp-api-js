@@ -23,6 +23,9 @@ class ApiClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
+    setAuthToken(token) {
+        this.token = token;
+    }
     authenticate(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let res;
