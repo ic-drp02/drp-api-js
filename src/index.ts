@@ -326,9 +326,9 @@ export default class ApiClient {
   }
 
   async getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>> {
-    let url = `revisions/${id}`;
+    let url = `posts/${id}?include_old=true`;
     if (reverse === true) {
-      url = url + "?reverse=true";
+      url = url + "&reverse=true";
     }
     return await this.getListResource(url);
   }
@@ -387,14 +387,29 @@ export default class ApiClient {
   }
 
   async getPost(id: number): Promise<Response<Post>> {
-    return this.getResourceById("posts", id);
+    const result = await this.getRevisions(id, true);
+    if (result.success && result.data) {
+      return {
+        success: result.success,
+        data: result.data[0]
+      }
+    } else if (result.status) {
+      return {
+        success: result.success,
+        status: result.status
+      }
+    }
+    return {
+      success: result.success,
+      status: -1
+    }
   }
 
   async deletePost(id: number): Promise<Response<never>> {
     return this.deleteResource("posts", id);
   }
 
-  async deleteGuidelineRevisions(id: number): Promise<Response<never>> {
+  async deleteRevision(id: number): Promise<Response<never>> {
     return this.deleteResource("revisions", id);
   }
 

@@ -121,7 +121,7 @@ export default class ApiClient {
     createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
-    deleteGuidelineRevisions(id: number): Promise<Response<never>>;
+    deleteRevision(id: number): Promise<Response<never>>;
     searchPosts({ searched, page, results_per_page, guidelines_only, include_old, tag, }: Search): Promise<Response<Post[]>>;
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;

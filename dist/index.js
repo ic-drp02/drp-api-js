@@ -220,9 +220,9 @@ class ApiClient {
     }
     getRevisions(id, reverse) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = `revisions/${id}`;
+            let url = `posts/${id}?include_old=true`;
             if (reverse === true) {
-                url = url + "?reverse=true";
+                url = url + "&reverse=true";
             }
             return yield this.getListResource(url);
         });
@@ -272,7 +272,23 @@ class ApiClient {
     }
     getPost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.getResourceById("posts", id);
+            const result = yield this.getRevisions(id, true);
+            if (result.success && result.data) {
+                return {
+                    success: result.success,
+                    data: result.data[0]
+                };
+            }
+            else if (result.status) {
+                return {
+                    success: result.success,
+                    status: result.status
+                };
+            }
+            return {
+                success: result.success,
+                status: -1
+            };
         });
     }
     deletePost(id) {
@@ -280,7 +296,7 @@ class ApiClient {
             return this.deleteResource("posts", id);
         });
     }
-    deleteGuidelineRevisions(id) {
+    deleteRevision(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.deleteResource("revisions", id);
         });
