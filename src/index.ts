@@ -311,6 +311,11 @@ export default class ApiClient {
     return await this.getListResource(url);
   }
 
+  async getMultiplePosts(ids: number[]): Promise<Response<Post[]>> {
+    let url = "fetch/posts?ids=" + ids.join();
+    return await this.getListResource(url);
+  }
+
   async getGuidelines(
     tag?: number,
     include_old?: boolean

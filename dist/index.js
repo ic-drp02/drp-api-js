@@ -206,6 +206,12 @@ class ApiClient {
             return yield this.getListResource(url);
         });
     }
+    getMultiplePosts(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = "fetch/posts?ids=" + ids.join();
+            return yield this.getListResource(url);
+        });
+    }
     getGuidelines(tag, include_old) {
         return __awaiter(this, void 0, void 0, function* () {
             let url = "posts?guidelines_only=true&" + this.addAttributes(tag, include_old);
