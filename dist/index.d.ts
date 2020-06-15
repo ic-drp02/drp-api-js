@@ -113,8 +113,8 @@ export default class ApiClient {
         role?: UserRole;
     }): Promise<Response<User>>;
     deleteUser(id: number): Promise<Response<User>>;
-    addAttributes(tag?: number, include_old?: boolean): string;
-    getPosts(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
+    addAttributes(tag?: number, include_old?: boolean, per_page?: number, page?: number): string;
+    getPosts(tag?: number, include_old?: boolean, per_page?: number, page?: number): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
     createPost({ title, summary, content, is_guideline, superseding, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;

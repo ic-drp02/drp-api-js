@@ -279,7 +279,12 @@ export default class ApiClient {
     }
   }
 
-  addAttributes(tag?: number, include_old?: boolean): string {
+  addAttributes(
+    tag?: number,
+    include_old?: boolean,
+    per_page?: number,
+    page?: number
+  ): string {
     let url = "";
     if (tag !== undefined) {
       url = url + `tag=${tag}`;
@@ -287,14 +292,22 @@ export default class ApiClient {
     if (include_old === true) {
       url = url + "&include_old=true";
     }
+    if (!!per_page) {
+      url += "&per_page=" + per_page;
+    }
+    if (!!page) {
+      url += "&page=" + page;
+    }
     return url;
   }
 
   async getPosts(
     tag?: number,
-    include_old?: boolean
+    include_old?: boolean,
+    per_page?: number,
+    page?: number
   ): Promise<Response<Post[]>> {
-    let url = "posts?" + this.addAttributes(tag, include_old);
+    let url = "posts?" + this.addAttributes(tag, include_old, per_page, page);
     return await this.getListResource(url);
   }
 

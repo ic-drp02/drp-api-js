@@ -184,7 +184,7 @@ class ApiClient {
             }
         });
     }
-    addAttributes(tag, include_old) {
+    addAttributes(tag, include_old, per_page, page) {
         let url = "";
         if (tag !== undefined) {
             url = url + `tag=${tag}`;
@@ -192,11 +192,17 @@ class ApiClient {
         if (include_old === true) {
             url = url + "&include_old=true";
         }
+        if (!!per_page) {
+            url += "&per_page=" + per_page;
+        }
+        if (!!page) {
+            url += "&page=" + page;
+        }
         return url;
     }
-    getPosts(tag, include_old) {
+    getPosts(tag, include_old, per_page, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "posts?" + this.addAttributes(tag, include_old);
+            let url = "posts?" + this.addAttributes(tag, include_old, per_page, page);
             return yield this.getListResource(url);
         });
     }
