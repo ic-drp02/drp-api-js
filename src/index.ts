@@ -4,7 +4,7 @@ export interface NewPost {
   summary: string;
   content: string;
   is_guideline?: boolean;
-  superseding?: number;
+  updates?: number;
   tags?: Tag[];
   files?: File[];
   names?: string[];
@@ -17,8 +17,8 @@ export interface Post {
   summary: string;
   content: string;
   is_guideline: boolean;
-  superseding: number;
-  superseded_by: number;
+  is_current: boolean;
+  revision_id: number;
   created_at: string;
   tags: Tag[];
   files: File[];
@@ -324,7 +324,7 @@ export default class ApiClient {
     id: number,
     reverse?: boolean
   ): Promise<Response<Post[]>> {
-    let url = `guidelines/${id}`;
+    let url = `revisions/${id}`;
     if (reverse === true) {
       url = url + "?reverse=true";
     }
@@ -336,7 +336,7 @@ export default class ApiClient {
     summary,
     content,
     is_guideline,
-    superseding,
+    updates,
     tags,
     names,
     files,
@@ -350,8 +350,8 @@ export default class ApiClient {
     if (is_guideline === true) {
       formData.append("is_guideline", "true");
     }
-    if (superseding !== undefined) {
-      formData.append("superseding", String(superseding));
+    if (updates !== undefined) {
+      formData.append("updates", String(updates));
     }
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));
@@ -393,7 +393,7 @@ export default class ApiClient {
   }
 
   async deleteGuidelineRevisions(id: number): Promise<Response<never>> {
-    return this.deleteResource("guidelines", id);
+    return this.deleteResource("revisions", id);
   }
 
   async searchPosts({

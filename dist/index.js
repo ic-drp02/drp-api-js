@@ -214,14 +214,14 @@ class ApiClient {
     }
     getGuidelineRevisions(id, reverse) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = `guidelines/${id}`;
+            let url = `revisions/${id}`;
             if (reverse === true) {
                 url = url + "?reverse=true";
             }
             return yield this.getListResource(url);
         });
     }
-    createPost({ title, summary, content, is_guideline, superseding, tags, names, files, onUploadedFraction, }) {
+    createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;
             let formData = new FormData();
@@ -231,8 +231,8 @@ class ApiClient {
             if (is_guideline === true) {
                 formData.append("is_guideline", "true");
             }
-            if (superseding !== undefined) {
-                formData.append("superseding", String(superseding));
+            if (updates !== undefined) {
+                formData.append("updates", String(updates));
             }
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
@@ -276,7 +276,7 @@ class ApiClient {
     }
     deleteGuidelineRevisions(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.deleteResource("guidelines", id);
+            return this.deleteResource("revisions", id);
         });
     }
     searchPosts({ searched, page, results_per_page, guidelines_only, include_old, tag, }) {
