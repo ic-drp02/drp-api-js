@@ -4,7 +4,7 @@ export interface NewPost {
     summary: string;
     content: string;
     is_guideline?: boolean;
-    superseding?: number;
+    updates?: number;
     tags?: Tag[];
     files?: File[];
     names?: string[];
@@ -16,8 +16,8 @@ export interface Post {
     summary: string;
     content: string;
     is_guideline: boolean;
-    superseding: number;
-    superseded_by: number;
+    is_current: boolean;
+    revision_id: number;
     created_at: string;
     tags: Tag[];
     files: File[];
@@ -115,12 +115,13 @@ export default class ApiClient {
     deleteUser(id: number): Promise<Response<User>>;
     addAttributes(tag?: number, include_old?: boolean, per_page?: number, page?: number): string;
     getPosts(tag?: number, include_old?: boolean, per_page?: number, page?: number): Promise<Response<Post[]>>;
+    getMultiplePosts(ids: number[]): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
-    getGuidelineRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, is_guideline, superseding, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
+    getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
+    createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
-    deleteGuidelineRevisions(id: number): Promise<Response<never>>;
+    deleteRevision(id: number): Promise<Response<never>>;
     searchPosts({ searched, page, results_per_page, guidelines_only, include_old, tag, }: Search): Promise<Response<Post[]>>;
     getTags(): Promise<Response<Tag[]>>;
     createTag(name: string): Promise<Response<Tag>>;

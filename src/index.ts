@@ -4,7 +4,7 @@ export interface NewPost {
   summary: string;
   content: string;
   is_guideline?: boolean;
-  superseding?: number;
+  updates?: number;
   tags?: Tag[];
   files?: File[];
   names?: string[];
@@ -17,8 +17,8 @@ export interface Post {
   summary: string;
   content: string;
   is_guideline: boolean;
-  superseding: number;
-  superseded_by: number;
+  is_current: boolean;
+  revision_id: number;
   created_at: string;
   tags: Tag[];
   files: File[];
@@ -311,6 +311,11 @@ export default class ApiClient {
     return await this.getListResource(url);
   }
 
+  async getMultiplePosts(ids: number[]): Promise<Response<Post[]>> {
+    let url = "fetch/posts?ids=" + ids.join();
+    return await this.getListResource(url);
+  }
+
   async getGuidelines(
     tag?: number,
     include_old?: boolean
@@ -320,13 +325,10 @@ export default class ApiClient {
     return await this.getListResource(url);
   }
 
-  async getGuidelineRevisions(
-    id: number,
-    reverse?: boolean
-  ): Promise<Response<Post[]>> {
-    let url = `guidelines/${id}`;
+  async getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>> {
+    let url = `posts/${id}?include_old=true`;
     if (reverse === true) {
-      url = url + "?reverse=true";
+      url = url + "&reverse=true";
     }
     return await this.getListResource(url);
   }
@@ -336,7 +338,7 @@ export default class ApiClient {
     summary,
     content,
     is_guideline,
-    superseding,
+    updates,
     tags,
     names,
     files,
@@ -350,8 +352,8 @@ export default class ApiClient {
     if (is_guideline === true) {
       formData.append("is_guideline", "true");
     }
-    if (superseding !== undefined) {
-      formData.append("superseding", String(superseding));
+    if (updates !== undefined) {
+      formData.append("updates", String(updates));
     }
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));
@@ -385,15 +387,30 @@ export default class ApiClient {
   }
 
   async getPost(id: number): Promise<Response<Post>> {
-    return this.getResourceById("posts", id);
+    const result = await this.getRevisions(id, true);
+    if (result.success && result.data) {
+      return {
+        success: result.success,
+        data: result.data[0]
+      }
+    } else if (result.status) {
+      return {
+        success: result.success,
+        status: result.status
+      }
+    }
+    return {
+      success: result.success,
+      status: -1
+    }
   }
 
   async deletePost(id: number): Promise<Response<never>> {
     return this.deleteResource("posts", id);
   }
 
-  async deleteGuidelineRevisions(id: number): Promise<Response<never>> {
-    return this.deleteResource("guidelines", id);
+  async deleteRevision(id: number): Promise<Response<never>> {
+    return this.deleteResource("revisions", id);
   }
 
   async searchPosts({
