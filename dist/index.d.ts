@@ -8,6 +8,7 @@ export interface NewPost {
     tags?: Tag[];
     files?: File[];
     names?: string[];
+    resolves?: number[];
     onUploadedFraction?: Function;
 }
 export interface Post {
@@ -59,6 +60,7 @@ export interface Question {
     specialty: string;
     subject: Subject;
     text: string;
+    resolved_by: Post;
 }
 export interface Site {
     id: number;
@@ -118,7 +120,7 @@ export default class ApiClient {
     getMultiplePosts(ids: number[]): Promise<Response<Post[]>>;
     getGuidelines(tag?: number, include_old?: boolean): Promise<Response<Post[]>>;
     getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>>;
-    createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
+    createPost({ title, summary, content, is_guideline, updates, tags, names, files, resolves, onUploadedFraction, }: NewPost): Promise<Response<Post>>;
     getPost(id: number): Promise<Response<Post>>;
     deletePost(id: number): Promise<Response<never>>;
     deleteRevision(id: number): Promise<Response<never>>;

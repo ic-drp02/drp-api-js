@@ -8,6 +8,7 @@ export interface NewPost {
   tags?: Tag[];
   files?: File[];
   names?: string[];
+  resolves?: number[];
   onUploadedFraction?: Function;
 }
 
@@ -63,6 +64,7 @@ export interface Question {
   specialty: string;
   subject: Subject;
   text: string;
+  resolved_by: Post;
 }
 
 export interface Site {
@@ -342,6 +344,7 @@ export default class ApiClient {
     tags,
     names,
     files,
+    resolves,
     onUploadedFraction,
   }: NewPost): Promise<Response<Post>> {
     let baseUrl = this.baseUrl;
@@ -358,6 +361,7 @@ export default class ApiClient {
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
+    resolves?.forEach((resolved) => formData.append("resolves", String(resolved)));
 
     return await new Promise(function (resolve, reject) {
       let xhr = new XMLHttpRequest();

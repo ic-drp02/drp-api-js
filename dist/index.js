@@ -227,7 +227,7 @@ class ApiClient {
             return yield this.getListResource(url);
         });
     }
-    createPost({ title, summary, content, is_guideline, updates, tags, names, files, onUploadedFraction, }) {
+    createPost({ title, summary, content, is_guideline, updates, tags, names, files, resolves, onUploadedFraction, }) {
         return __awaiter(this, void 0, void 0, function* () {
             let baseUrl = this.baseUrl;
             let formData = new FormData();
@@ -243,6 +243,7 @@ class ApiClient {
             tags === null || tags === void 0 ? void 0 : tags.forEach((tag) => formData.append("tags", String(tag)));
             names === null || names === void 0 ? void 0 : names.forEach((name) => formData.append("names", name));
             files === null || files === void 0 ? void 0 : files.forEach((file) => formData.append("files", file));
+            resolves === null || resolves === void 0 ? void 0 : resolves.forEach((resolved) => formData.append("resolves", String(resolved)));
             return yield new Promise(function (resolve, reject) {
                 let xhr = new XMLHttpRequest();
                 xhr.responseType = "json";
