@@ -59,6 +59,7 @@ export interface Question {
     specialty: string;
     subject: Subject;
     text: string;
+    resolved_by: Post;
 }
 export interface Site {
     id: number;
