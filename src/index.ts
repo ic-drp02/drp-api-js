@@ -129,7 +129,7 @@ export default class ApiClient {
   ): Promise<Response<Token>> {
     let res;
     try {
-      res = await fetch("/auth/authenticate", {
+      res = await fetch(this.baseUrl + "/auth/authenticate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -361,7 +361,9 @@ export default class ApiClient {
     tags?.forEach((tag) => formData.append("tags", String(tag)));
     names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
-    resolves?.forEach((resolved) => formData.append("resolves", String(resolved)));
+    resolves?.forEach((resolved) =>
+      formData.append("resolves", String(resolved))
+    );
 
     return await new Promise(function (resolve, reject) {
       let xhr = new XMLHttpRequest();
@@ -395,18 +397,18 @@ export default class ApiClient {
     if (result.success && result.data) {
       return {
         success: result.success,
-        data: result.data[0]
-      }
+        data: result.data[0],
+      };
     } else if (result.status) {
       return {
         success: result.success,
-        status: result.status
-      }
+        status: result.status,
+      };
     }
     return {
       success: result.success,
-      status: -1
-    }
+      status: -1,
+    };
   }
 
   async deletePost(id: number): Promise<Response<never>> {
@@ -454,7 +456,7 @@ export default class ApiClient {
   }
 
   async renameTag(id: number, name: string): Promise<Response<Tag>> {
-    const res = await fetch("/api/tags/" + id, {
+    const res = await fetch(this.baseUrl + "/api/tags/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

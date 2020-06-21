@@ -30,7 +30,7 @@ class ApiClient {
         return __awaiter(this, void 0, void 0, function* () {
             let res;
             try {
-                res = yield fetch("/auth/authenticate", {
+                res = yield fetch(this.baseUrl + "/auth/authenticate", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -277,18 +277,18 @@ class ApiClient {
             if (result.success && result.data) {
                 return {
                     success: result.success,
-                    data: result.data[0]
+                    data: result.data[0],
                 };
             }
             else if (result.status) {
                 return {
                     success: result.success,
-                    status: result.status
+                    status: result.status,
                 };
             }
             return {
                 success: result.success,
-                status: -1
+                status: -1,
             };
         });
     }
@@ -337,7 +337,7 @@ class ApiClient {
     }
     renameTag(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("/api/tags/" + id, {
+            const res = yield fetch(this.baseUrl + "/api/tags/" + id, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
