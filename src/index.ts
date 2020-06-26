@@ -320,10 +320,13 @@ export default class ApiClient {
 
   async getGuidelines(
     tag?: number,
-    include_old?: boolean
+    include_old?: boolean,
+    per_page?: number,
+    page?: number
   ): Promise<Response<Post[]>> {
     let url =
-      "posts?guidelines_only=true&" + this.addAttributes(tag, include_old);
+      "posts?guidelines_only=true&" +
+      this.addAttributes(tag, include_old, per_page, page);
     return await this.getListResource(url);
   }
 

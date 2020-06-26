@@ -212,9 +212,10 @@ class ApiClient {
             return yield this.getListResource(url);
         });
     }
-    getGuidelines(tag, include_old) {
+    getGuidelines(tag, include_old, per_page, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "posts?guidelines_only=true&" + this.addAttributes(tag, include_old);
+            let url = "posts?guidelines_only=true&" +
+                this.addAttributes(tag, include_old, per_page, page);
             return yield this.getListResource(url);
         });
     }
