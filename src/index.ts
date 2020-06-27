@@ -1,36 +1,40 @@
-export interface NewPost {
-  id: number;
+type PostType = "update" | "guideline";
+
+export interface NewPostRevision {
   title: string;
   summary: string;
   content: string;
-  is_guideline?: boolean;
-  updates?: number;
-  tags?: Tag[];
+  tags: string[];
+  resolves: number[];
   files?: File[];
-  names?: string[];
-  resolves?: number[];
-  onUploadedFraction?: Function;
+  file_names?: string[];
+}
+
+export interface NewPost extends NewPostRevision {
+  type?: PostType;
 }
 
 export interface Post {
   id: number;
+  type: PostType;
+  latest_revision: PostRevision;
+}
+
+export interface PostRevision {
+  id: number;
   title: string;
   summary: string;
   content: string;
-  is_guideline: boolean;
-  is_current: boolean;
-  revision_id: number;
   created_at: string;
   tags: Tag[];
-  files: File[];
+  files: FileEntity[];
 }
 
-export interface Search {
+export interface SearchQuery {
   searched: string;
   page?: number;
   results_per_page?: number;
-  guidelines_only?: boolean;
-  include_old?: boolean;
+  type?: "any" | PostType;
   tag?: string;
 }
 
@@ -112,6 +116,14 @@ export interface Response<T, E = Error> {
   status?: number;
   data?: T;
   error?: E;
+}
+
+export interface PostsQuery {
+  ids?: number[];
+  type?: PostType | "any";
+  tag?: string;
+  page?: number;
+  per_page?: number;
 }
 
 export default class ApiClient {
@@ -281,100 +293,75 @@ export default class ApiClient {
     }
   }
 
-  addAttributes(
-    tag?: number,
-    include_old?: boolean,
-    per_page?: number,
-    page?: number
-  ): string {
-    let url = "";
-    if (tag !== undefined) {
-      url = url + `tag=${tag}`;
+  async getPosts({
+    ids,
+    type,
+    tag,
+    page,
+    per_page,
+  }: PostsQuery): Promise<Response<Post[]>> {
+    let url = "posts?";
+
+    if (ids) {
+      url += "&ids=" + ids.join();
     }
-    if (include_old === true) {
-      url = url + "&include_old=true";
+
+    if (type) {
+      url += "&type=" + type;
     }
-    if (!!per_page) {
-      url += "&per_page=" + per_page;
+
+    if (tag) {
+      url += "&type=" + tag;
     }
-    if (!!page) {
+
+    if (page) {
       url += "&page=" + page;
     }
-    return url;
-  }
 
-  async getPosts(
-    tag?: number,
-    include_old?: boolean,
-    per_page?: number,
-    page?: number
-  ): Promise<Response<Post[]>> {
-    let url = "posts?" + this.addAttributes(tag, include_old, per_page, page);
-    return await this.getListResource(url);
-  }
-
-  async getMultiplePosts(ids: number[]): Promise<Response<Post[]>> {
-    let url = "fetch/posts?ids=" + ids.join();
-    return await this.getListResource(url);
-  }
-
-  async getGuidelines(
-    tag?: number,
-    include_old?: boolean,
-    per_page?: number,
-    page?: number
-  ): Promise<Response<Post[]>> {
-    let url =
-      "posts?guidelines_only=true&" +
-      this.addAttributes(tag, include_old, per_page, page);
-    return await this.getListResource(url);
-  }
-
-  async getRevisions(id: number, reverse?: boolean): Promise<Response<Post[]>> {
-    let url = `posts/${id}?include_old=true`;
-    if (reverse === true) {
-      url = url + "&reverse=true";
+    if (per_page) {
+      url += "&per_page=" + per_page;
     }
+
     return await this.getListResource(url);
   }
 
-  async createPost({
-    title,
-    summary,
-    content,
-    is_guideline,
-    updates,
-    tags,
-    names,
-    files,
-    resolves,
-    onUploadedFraction,
-  }: NewPost): Promise<Response<Post>> {
+  async createPost(
+    {
+      type,
+      title,
+      summary,
+      content,
+      tags,
+      resolves,
+      files,
+      file_names,
+    }: NewPost,
+    onUploadedFraction?: (progress: number) => any
+  ): Promise<Response<Post>> {
     let baseUrl = this.baseUrl;
     let formData = new FormData();
+
     formData.append("title", title);
     formData.append("summary", summary);
     formData.append("content", content);
-    if (is_guideline === true) {
-      formData.append("is_guideline", "true");
+
+    if (type) {
+      formData.append("type", type);
     }
-    if (updates !== undefined) {
-      formData.append("updates", String(updates));
-    }
-    tags?.forEach((tag) => formData.append("tags", String(tag)));
-    names?.forEach((name) => formData.append("names", name));
+
+    tags?.forEach((tag) => formData.append("tags", tag));
+    file_names?.forEach((name) => formData.append("names", name));
     files?.forEach((file) => formData.append("files", file));
+
     resolves?.forEach((resolved) =>
-      formData.append("resolves", String(resolved))
+      formData.append("resolves", resolved.toString())
     );
 
-    return await new Promise(function (resolve, reject) {
+    return await new Promise(function (resolve) {
       let xhr = new XMLHttpRequest();
       xhr.responseType = "json";
       xhr.upload.onprogress = (event) => {
-        if (onUploadedFraction !== undefined) {
-          onUploadedFraction(event.loaded / event.total);
-        }
+        onUploadedFraction && onUploadedFraction(event.loaded / event.total);
       };
       xhr.upload.onerror = () => {
         resolve({ success: false, status: -1 });
@@ -396,54 +383,110 @@ export default class ApiClient {
   }
 
   async getPost(id: number): Promise<Response<Post>> {
-    const result = await this.getRevisions(id, true);
-    if (result.success && result.data) {
-      return {
-        success: result.success,
-        data: result.data[0],
-      };
-    } else if (result.status) {
-      return {
-        success: result.success,
-        status: result.status,
-      };
-    }
-    return {
-      success: result.success,
-      status: -1,
-    };
+    return await this.getResourceById("posts", id);
   }
 
   async deletePost(id: number): Promise<Response<never>> {
-    return this.deleteResource("posts", id);
+    return await this.deleteResource("posts", id);
   }
 
-  async deleteRevision(id: number): Promise<Response<never>> {
-    return this.deleteResource("revisions", id);
+  async getPostRevisions(
+    id: number,
+    order: "asc" | "desc" = "desc"
+  ): Promise<Response<PostRevision[]>> {
+    let url = `posts/${id}/revisions?order=${order}`;
+    return await this.getListResource(url);
+  }
+
+  async createPostRevision(
+    id: number,
+    {
+      title,
+      summary,
+      content,
+      tags,
+      resolves,
+      files,
+      file_names,
+    }: NewPostRevision,
+    onUploadedFraction?: (progress: number) => any
+  ): Promise<Response<Post>> {
+    let baseUrl = this.baseUrl;
+    let formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("summary", summary);
+    formData.append("content", content);
+
+    tags?.forEach((tag) => formData.append("tags", tag));
+    file_names?.forEach((name) => formData.append("names", name));
+    files?.forEach((file) => formData.append("files", file));
+
+    resolves?.forEach((resolved) =>
+      formData.append("resolves", resolved.toString())
+    );
+
+    return await new Promise(function (resolve) {
+      let xhr = new XMLHttpRequest();
+      xhr.responseType = "json";
+      xhr.upload.onprogress = (event) => {
+        onUploadedFraction && onUploadedFraction(event.loaded / event.total);
+      };
+      xhr.upload.onerror = () => {
+        resolve({ success: false, status: -1 });
+      };
+      xhr.upload.onabort = () => {
+        resolve({ success: false, status: -2 });
+      };
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          if (xhr.status != 200) {
+            resolve({ success: false, status: xhr.status });
+          }
+          resolve({ success: true, data: xhr.response });
+        }
+      };
+      xhr.open("POST", baseUrl + `/api/posts/${id}/revisions`);
+      xhr.send(formData);
+    });
+  }
+
+  async getPostRevision(
+    postId: number,
+    revisionId: number
+  ): Promise<Response<PostRevision>> {
+    return await this.getResourceById(`posts/${postId}/revisions`, revisionId);
+  }
+
+  async deletePostRevision(
+    postId: number,
+    revisionId: number
+  ): Promise<Response<never>> {
+    return await this.deleteResource(`posts/${postId}/revisions`, revisionId);
   }
 
   async searchPosts({
     searched,
     page,
     results_per_page,
-    guidelines_only,
-    include_old,
+    type,
     tag,
-  }: Search): Promise<Response<Post[]>> {
+  }: SearchQuery): Promise<Response<Post[]>> {
     let url = `search/posts/${searched}?`;
-    if (page !== undefined && results_per_page !== undefined) {
-      url = url + `page=${page}&results_per_page=${results_per_page}`;
+
+    if (page && results_per_page) {
+      url = url + `&page=${page}&results_per_page=${results_per_page}`;
     }
-    if (guidelines_only === true) {
-      url = url + "&guidelines_only=true";
+
+    if (type) {
+      url = url + "&type=" + type;
     }
-    if (include_old === true) {
-      url = url + "&include_old=true";
-    }
+
     if (tag !== undefined) {
-      url = url + `&tag=${tag}`;
+      url += "&tag=" + tag;
     }
-    return this.getListResource(url);
+
+    return await this.getListResource(url);
   }
 
   async getTags(): Promise<Response<Tag[]>> {
@@ -478,58 +521,6 @@ export default class ApiClient {
 
   async getFiles(): Promise<Response<FileEntity[]>> {
     const response = await fetch(this.baseUrl + "/api/files");
-
-    if (response.status != 200) {
-      return { success: false, status: response.status };
-    }
-
-    return {
-      success: true,
-      data: await response.json(),
-    };
-  }
-
-  async createFile(
-    file: File,
-    name: string,
-    post: number
-  ): Promise<Response<FileEntity>> {
-    let formData = new FormData();
-    formData.append("file", file);
-    formData.append("name", name);
-    formData.append("post", String(post));
-
-    let response = await fetch(this.baseUrl + "/api/files", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.status != 200) {
-      return { success: false, status: response.status };
-    }
-
-    return {
-      success: true,
-      data: await response.json(),
-    };
-  }
-
-  async deleteFile(id: number): Promise<Response<undefined>> {
-    let response = await fetch(this.baseUrl + "/api/files/" + id.toString(), {
-      method: "DELETE",
-    });
-
-    if (response.status != 204) {
-      return { success: false, status: response.status };
-    }
-
-    return {
-      success: true,
-    };
-  }
-
-  async getFile(id: number): Promise<Response<FileEntity>> {
-    const response = await fetch(this.baseUrl + "/api/files/" + id.toString());
 
     if (response.status != 200) {
       return { success: false, status: response.status };
